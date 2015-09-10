@@ -1,0 +1,384 @@
+import java.util.Random;
+
+
+/**
+ * @author NCC_74656
+ *	Class to store and sort an int array and then show return and show the sorted numbers
+ */
+public class Algorithms {
+	private int[] numbers;
+	private static Random randy = new Random();
+
+	
+	/**
+	 * @param n	Size of array
+	 */
+	public Algorithms(int n) {
+		numbers = new int[n];
+	}
+	
+	/**
+	 * @param n	Custom array
+	 */
+	public Algorithms(int[] n) {
+		numbers = n;
+	}
+	
+	/**
+	 * Fills a random array mostly in order
+	 */
+	public void fillAlmostInOrder() {
+		for (int k = 0; k < numbers.length; k++) {
+			numbers[k] = k + 1;
+		}
+		int a = randy.nextInt(numbers.length);
+		int b = randy.nextInt(numbers.length);
+		swap(a, b);
+	}
+	
+	/**
+	 * @param a	First number
+	 * @param b	Number to be switched
+	 */
+	private void swap(int a, int b) {
+		int temp = numbers[a];
+		numbers[a] = numbers[b];
+		numbers[b] = temp;
+	}
+	
+	/**
+	 * Displays Numbers in order
+	 */
+	public void showNumbers() {
+		for (int k = 0; k < numbers.length; k++) {
+			System.out.print(numbers[k] + " ");
+		}
+		System.out.println();
+	}
+
+	/**
+	 * Randomly fills an array with numbers
+	 */
+	public void fillRandom() {
+		for (int k = 0; k < numbers.length; k++) {
+			numbers[k] = randy.nextInt(2 * numbers.length) + 1;
+		}
+	}
+	
+	/**
+	 * Implementation of bubble sort
+	 */
+	public void bubbleSort() {
+		boolean red;
+		int greenStop = numbers.length - 2;
+		do{
+			red = false;
+			for (int greenArrow = 0; greenArrow <= greenStop; greenArrow++) {
+				if (numbers[greenArrow] > numbers[greenArrow + 1]){
+					swap(greenArrow, greenArrow + 1);
+					red = true;
+				}
+			}
+		greenStop --;
+		}
+		while (red);
+	}
+	
+	/**
+	 * Implementation of selection sort
+	 */
+	public void selectionSort() {
+		for (int g = 0; g < numbers.length - 1; g ++) {
+			int indexOfMin = getIndexOfMin(g + 1);
+			if (numbers[g] > numbers[indexOfMin]){
+				swap(g, indexOfMin);
+			}
+		}
+	}
+
+	/**
+	 * @param start	Number to look up
+	 * @return		The location in the array
+	 */
+	private int getIndexOfMin(int start) {
+		int indexOfMin = start;
+		for (int k = start + 1; k < numbers.length; k ++) {
+			if (numbers[k] < numbers[indexOfMin]) indexOfMin = k;
+		}
+		return indexOfMin;
+	}
+	
+	/**
+	 * Implementation of insertion sort
+	 */
+	public void myinsertionSort() {
+		for (int k = 1; k < numbers.length; k ++) {
+			int current = k;
+			while (current > 0 && numbers[current] < numbers[current - 1]) {
+				swap(current, current - 1);
+				current --;
+			}
+		}
+	}
+	
+	/**
+	 * @return	Returns the array
+	 */
+	public int[] getNumbers() {
+		return numbers;
+	}
+	
+	/**
+	 * Public to hide the actual method from the user
+	 * Implementation of merge sort
+	 */
+	public void mergeSort() {
+		numbers = mergeSort(numbers);
+	}
+	
+	
+	/**
+	 * @param toSplit	The array of numbers
+	 * @return			A sorted array
+	 */
+	private int[] mergeSort(int[] toSplit) {
+		if (toSplit.length == 1) {
+			return toSplit;
+		}
+		if (toSplit.length == 2) {
+			if (toSplit[0] > toSplit[1]) {
+				int temp = toSplit[0];
+				toSplit[0] = toSplit[1];
+				toSplit[1] = temp; 
+				return toSplit;
+			}
+			return toSplit;
+		}
+		
+		int[] left = new int[toSplit.length/2];
+		int[] right;
+		for (int k = 0; k < left.length; k ++) {
+			left[k] = toSplit[k];
+		}
+		if (toSplit.length % 2 == 1) {
+			right = new int[(toSplit.length/2) + 1];
+			for (int k = left.length; k < toSplit.length; k ++) {
+				right[k-left.length] = toSplit[k];
+			}
+		}
+		else {
+			right = new int[(toSplit.length/2)];
+			for (int k = left.length; k < toSplit.length; k ++) {
+				right[k-left.length] = toSplit[k];
+			}
+		}
+		int[] newLeft = mergeSort(left);
+		int[] newRight = mergeSort(right);
+		int[] newtoSplit = new int[newLeft.length + newRight.length];
+		int lStart = 0;
+		int rStart = 0;
+		int total = 0;
+		
+		for (int k = 0; k < newtoSplit.length; k ++) {
+			if (newLeft.length == lStart) {
+				newtoSplit[total] = newRight[rStart];
+				rStart ++;
+				total ++;
+			}
+			else if (newRight.length == rStart) {
+				newtoSplit[total] = newLeft[lStart];
+				lStart ++;
+				total ++;
+			}
+			else if (newLeft[lStart] < newRight[rStart]) {
+				newtoSplit[total] = newLeft[lStart];
+				lStart ++;
+				total ++;
+			}
+			else if (newLeft[lStart] > newRight[rStart]) {
+				newtoSplit[total] = newRight[rStart];
+				rStart ++;
+				total ++;
+			}
+			else if (newLeft[lStart] == newRight[rStart]) {
+				if (lStart > rStart) {
+					newtoSplit[total] = newRight[rStart];
+					rStart ++;
+					total ++;
+				}
+				else {
+					newtoSplit[total] = newLeft[lStart];
+					lStart ++;
+					total ++;
+				}
+			}
+		}
+		return newtoSplit;
+	}
+	
+	/**
+	 * @param key	The thing to find
+	 * @return		Returns the first instance of the key
+	 */
+	public int linearSearch(int key) {
+		for (int k = 0; k < numbers.length; k ++) {
+			if (key == numbers[k]) {
+				return k;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * @param key	The item to find
+	 * @return		The location of the item
+	 */
+	public int binarySearch(int key) {
+		return binarySearch(key, 0, numbers.length, 0);
+	}
+	
+	/**
+	 * @param key	Item to find
+	 * @param a		low
+	 * @param b		high
+	 * @param lastMid	former middle number
+	 * @return		the location of the item
+	 */
+	private int binarySearch(int key, int a, int b, int lastMid) {
+		int mid = (a + b) / 2;
+		if (numbers[mid] == key) return mid;
+		if (mid == lastMid) return -1;
+		else if (numbers[mid] < key) {
+			return binarySearch(key, mid + 1, b, mid);
+		}
+		else if (numbers[mid] > key) {
+			return binarySearch(key, 0, mid -1, mid);
+		}
+		return -1;
+	}
+
+	
+	/**
+	 * A public method for quick sort
+	 */
+	public void quickSort() {
+		quickSort(0, numbers.length - 1);
+	}
+
+	/**
+	 * @param min	The low of the searching
+	 * @param max	The high
+	 */
+	private void quickSort(int min, int max) {
+		int mid = (min + max) / 2;
+		int lp = min; int rp = max;
+		if (max - min == 1) {
+			
+		}
+		else if (max - min == 2) {
+			if (numbers[min] > numbers[max]) {
+				swap(min, max);
+			}
+		}
+		else {
+			swap(mid, max);
+			while (lp != rp) {
+				while (numbers[lp] < numbers[max]) {
+					lp ++;
+				}
+				while (numbers[rp] >= numbers[max]) {
+					rp --;
+				}
+				swap(lp, rp);
+				lp ++; rp --;
+			}
+			swap(lp, rp);
+			quickSort(min, mid - 1); quickSort(mid + 1, max);
+		}
+	}
+	
+	/**
+	 * Creates tree sort tree
+	 */
+	public void treeSort() {
+		TreeNode tree = treeSort(1, new TreeNode(numbers[0], null, null));
+		inOrder(tree, 0);
+	}
+	
+	/**
+	 * @param k			The number to find
+	 * @param treeNode	The former tree node
+	 * @return			Returns TreeNode
+	 */
+	private TreeNode treeSort(int k, TreeNode treeNode) {
+		if (k > numbers.length - 1) {
+			this.showNumbers();
+		}
+		else if (numbers[k] > treeNode.getNumber()) {
+			if (treeNode.getLeftChild() != null) {
+				treeBuilder(k, treeNode.getLeftChild());
+				treeSort(k + 1, treeNode);
+			}
+			else {
+				TreeNode treey = new TreeNode(numbers[k], null, null);
+				treeNode.setLeftChild(treey);
+				treeSort(k + 1, treeNode);
+			}
+		}
+		else {
+			if (treeNode.getRightChild() != null) {
+				treeBuilder(k, treeNode.getRightChild());
+				treeSort(k + 1, treeNode);
+			}
+			else {
+				TreeNode treey = new TreeNode(numbers[k], null, null);
+				treeNode.setRightChild(treey);
+				treeSort(k + 1, treeNode);
+			}
+		}
+		return treeNode;
+	}
+
+	/**
+	 * Builds the tree
+	 * @param k			the Number
+	 * @param treeNode	The last tree node
+	 */
+	private void treeBuilder(int k, TreeNode treeNode) {
+		if (numbers[k] > treeNode.getNumber()) {
+			if (treeNode.getLeftChild() != null) {
+				treeBuilder(k, treeNode.getLeftChild());
+			}
+			else {
+				TreeNode treey = new TreeNode(numbers[k], null, null);
+				treeNode.setLeftChild(treey);
+			}
+		}
+		else {
+			if (treeNode.getRightChild() != null) {
+				treeBuilder(k, treeNode.getRightChild());
+			}
+			else {
+				TreeNode treey = new TreeNode(numbers[k], null, null);
+				treeNode.setRightChild(treey);
+			}
+		}
+		
+	}
+
+	/**
+	 * @param t	Tree node
+	 * @param k	keeps track of position.
+	 */
+	private void inOrder(TreeNode t, int k) {
+		int kk = Math.abs(k - numbers.length - 1);
+		if (t != null) {
+			inOrder(t.getLeftChild(), k ++);
+			System.out.println(t.getNumber());
+			numbers[kk] = t.getNumber();
+			inOrder(t.getRightChild(), k ++);
+			numbers[kk] = t.getNumber();
+		}
+	}
+	
+}
